@@ -1,0 +1,14 @@
+# Ignorer les fichiers HTML générés (exercices)
+exercice*.html
+
+# Ignorer les fichiers temporaires de l'éditeur
+*.swp
+*.swo
+*~
+
+# Ignorer les fichiers système (macOS, Windows)
+.DS_Store
+Thumbs.db
+
+# Ignorer les logs éventuels
+*.log

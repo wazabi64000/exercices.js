@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Correction Exercices JavaScript</title>
+</head>
+<body>
+    <h1>Correction Exercices JavaScript</h1>
+    <script>
+        // ----------------------------
+        // Exercice 1 — Vérificateur de palindrome (basique)
+        // ----------------------------
+        function isPalindrome(str) {
+            // Ici, on compare exactement la chaîne telle quelle
+            // 1. Split : transforme la chaîne en tableau de caractères
+            const chars = str.split('');
+            // 2. Reverse : inverse l'ordre du tableau
+            const reversed = chars.reverse();
+            // 3. Join : reforme une chaîne à partir du tableau inversé
+            const reversedStr = reversed.join('');
+            // 4. Compare avec l'original et retourne true/false
+            return str === reversedStr;
+        }
+        console.log('Exercice 1:', isPalindrome("radar")); // true
+        console.log('Exercice 1:', isPalindrome("JavaScript")); // false
+
+        // ----------------------------
+        // Exercice 2 — Vérificateur de palindrome normalisé
+        // ----------------------------
+        function isPalindromeNormalized(str) {
+            // 1. Normaliser la casse
+            const lower = str.toLowerCase();
+            // 2. Supprimer tous les caractères non alphanumériques
+            const cleaned = lower.replace(/[^a-z0-9]/gi, '');
+            // 3. Inverser et comparer
+            return cleaned === cleaned.split('').reverse().join('');
+        }
+        console.log('Exercice 2:', isPalindromeNormalized("A man, a plan, a canal: Panama")); // true
+
+        // ----------------------------
+        // Exercice 3 — Manipulations de chaîne
+        // ----------------------------
+        // a) inversion des mots
+        function reverseWords(sentence) {
+            // Split par espace (ou multiples espaces)
+            const words = sentence.split(/\s+/);
+            // Inverser l'ordre des mots
+            const reversedWords = words.reverse();
+            // Rejoindre en une phrase
+            return reversedWords.join(' ');
+        }
+        console.log('Exercice 3a:', reverseWords("Hello world")); // "world Hello"
+
+        // b) compter les voyelles
+        function countVowels(str) {
+            // Normaliser la casse
+            const lower = str.toLowerCase();
+            // Regex pour trouver toutes les voyelles
+            const matches = lower.match(/[aeiouy]/g);
+            // Si matches est null (aucune voyelle), retourner 0
+            return matches ? matches.length : 0;
+        }
+        console.log('Exercice 3b:', countVowels("Hello")); // 2
+
+        // ----------------------------
+        // Exercice 4 — Nombres impairs
+        // a) Filtrer les impairs
+        function filterOdds(arr) {
+            return arr.filter(num => num % 2 !== 0);
+        }
+        console.log('Exercice 4a:', filterOdds([1, 2, 3, 4, 5])); // [1,3,5]
+
+        // b) Générer les n premiers impairs
+        function generateOdds(n, start = 1) {
+            const result = [];
+            let current = start;
+            while (result.length < n) {
+                if (current % 2 !== 0) result.push(current);
+                current++;
+            }
+            return result;
+        }
+        console.log('Exercice 4b:', generateOdds(5)); // [1,3,5,7,9]
+
+        // ----------------------------
+        // Exercice 5 — Nombres aléatoires
+        // a) entier aléatoire inclusif
+        function randomInt(min, max) {
+            // Math.random() retourne [0,1)
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        console.log('Exercice 5a:', randomInt(1, 10));
+
+        // b) n nombres aléatoires distincts
+        function uniqueRandoms(count, min, max) {
+            const possibleCount = max - min + 1;
+            if (count > possibleCount) throw new Error("Impossible de générer autant de nombres distincts");
+            const resultSet = new Set();
+            while (resultSet.size < count) {
+                resultSet.add(randomInt(min, max));
+            }
+            return Array.from(resultSet);
+        }
+        console.log('Exercice 5b:', uniqueRandoms(5, 1, 10));
+
+        // ----------------------------
+        // Exercice 6 — Incrémentation du panier
+        // a) Avec localStorage
+        function incrementCartItemLocalStorage(productId) {
+            let cart = {};
+            // Récupérer le panier existant
+            const storedCart = localStorage.getItem('cart');
+            if (storedCart) {
+                try {
+                    cart = JSON.parse(storedCart);
+                } catch(e) {
+                    console.error("Erreur JSON:", e);
+                }
+            }
+            // Incrémenter ou initialiser la quantité
+            if (cart[productId]) {
+                cart[productId]++;
+            } else {
+                cart[productId] = 1;
+            }
+            // Sauvegarder
+            localStorage.setItem('cart', JSON.stringify(cart));
+            return cart;
+        }
+        console.log('Exercice 6a:', incrementCartItemLocalStorage("prod1"));
+
+        // b) Avec cookies
+        function getCartFromCookies() {
+            const cookies = document.cookie.split(';');
+            for (const cookie of cookies) {
+                const [key, value] = cookie.split('=').map(c => c.trim());
+                if (key === 'cart') {
+                    try {
+                        return JSON.parse(decodeURIComponent(value));
+                    } catch(e) {
+                        console.error("Erreur JSON cookies:", e);
+                        return {};
+                    }
+                }
+            }
+            return {};
+        }
+
+        function setCartToCookies(cart) {
+            const json = encodeURIComponent(JSON.stringify(cart));
+            // max-age = 1 jour = 86400 secondes
+            document.cookie = `cart=${json}; path=/; max-age=86400`;
+        }
+
+        function incrementCartItemCookie(productId) {
+            const cart = getCartFromCookies();
+            if (cart[productId]) {
+                cart[productId]++;
+            } else {
+                cart[productId] = 1;
+            }
+            setCartToCookies(cart);
+            return cart;
+        }
+        console.log('Exercice 6b:', incrementCartItemCookie("prod2"));
+    </script>
+</body>
+</html>
